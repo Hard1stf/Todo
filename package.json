@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/Hard1stf/Todo/issues"
   },
-  "homepage": "https://github.com/Hard1stf/Todo#readme"
+  "homepage": "https://github.com/Hard1stf/Todo#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  }
 }
