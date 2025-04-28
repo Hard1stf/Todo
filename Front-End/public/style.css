@@ -1,0 +1,34 @@
+*{
+    padding: 0;
+    margin:0;
+    box-sizing: border-box;
+}
+body {
+    background-color: black;
+    color: beige;
+    font-family: cursive;
+    text-align: center;
+}
+
+main {
+    height: 100dvh;
+    width: 100dvw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+h1{
+    font-size: 3rem;
+}
+
+button {
+    padding: 10px 2rem;
+    border-radius: 40px;
+    margin: 0 1rem;
+    font-size: 1.1rem;
+    font-weight:800;
+    cursor: pointer;
+}
