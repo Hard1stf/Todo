@@ -7,3 +7,36 @@ const path = require('path');
 
 const app = express();
 const JWT_SECRET = "HARDIK-VIJETA";
+
+const PORT = process.env.PORT || 3000;
+const userDataBase = [];
+
+
+const auth = async (req, res, next) => {
+    // code: Logic of Authorization.
+}
+
+
+app.use(express.json());
+
+app.post("/signup", (req, res) => {
+    const {username, email, password} = req.body;
+
+    if(!username || !email || !password){
+        return res.status(400).json({"message": "Name, Email and Password is required."});
+    }
+
+    if(userDataBase.find(user => user.email === email)){
+        return res.status(409).json({"message": "This email is already used here."});
+    }
+
+    userDataBase.push({username, email, password});
+    console.log(`New User: \nName:\t${username}\nEmail:\t${email}\nPassword:\t${password}`);
+    res.status(200).json({"message": "User Register Successful."})
+});
+
+
+
+app.listen(PORT, () => {
+    console.log(`Server is ONLINE --> "http://localhost:${PORT}"\n`);
+})
