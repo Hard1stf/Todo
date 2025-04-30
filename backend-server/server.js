@@ -35,7 +35,23 @@ app.post("/signup", (req, res) => {
     res.status(200).json({"message": "User Register Successful."})
 });
 
+app.post("/signin", (req,res) => {
+    const {email, password} = req.body;
+    
+    if(!email || !password){
+        return res.status(400).json({"message": "Enter Email and Password."});
+    }
 
+    const isUserExist = userDataBase.find(user => user.email === email && user.password === password);
+
+    if(isUserExist){
+        const token = jwt.sign({email}, JWT_SECRET);
+        res.status(200).json({token});
+        console.log(`[LOGIN]---User:\t${email}`);
+    }else{
+        return res.status(401).json({"message": "Email and Password is Wrong."});
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`Server is ONLINE --> "http://localhost:${PORT}"\n`);
