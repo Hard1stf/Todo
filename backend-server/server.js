@@ -67,6 +67,20 @@ app.post("/signin", (req,res) => {
     }
 });
 
+app.post("/user-profile", (req, res) => {
+    const decodedToken = req.user; 
+
+    const checkUserInfo = userDataBase.find(user => user.email === decodedToken.email)
+    if(checkUserInfo){
+        res.status(200).json({
+            "Name": checkUserInfo.username,
+            "Email": checkUserInfo.email
+        });
+    }else{
+        return res.status(403).json({"message": "Access Denied."});
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is ONLINE --> "http://localhost:${PORT}"\n`);
 })
