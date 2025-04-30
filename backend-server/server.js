@@ -3,6 +3,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const { decode } = require('punycode');
 
 
 const app = express();
@@ -13,7 +14,20 @@ const userDataBase = [];
 
 
 const auth = async (req, res, next) => {
-    // code: Logic of Authorization.
+    const token = req.header.authorization;
+
+    if(token){
+        jwt.verify(token, JWT_SECRET, (err, decoded) => {
+            if(err){
+                return res.status(401).json({"message": "Unauthorize User."});
+            }else{
+                req.user = decoded;
+                next();
+            }
+        })
+    }else{
+        return res.status(401).json({"message": "Unauthorized User."});
+    }
 }
 
 
