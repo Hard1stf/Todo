@@ -3,84 +3,86 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const { decode } = require('punycode');
 
 
 const app = express();
 const JWT_SECRET = "HARDIK-VIJETA";
-
 const PORT = process.env.PORT || 3000;
 const userDataBase = [];
 
 
 const auth = async (req, res, next) => {
-    const token = req.header.authorization;
+    const token = req.headers.authorization;
 
-    if(token){
+    if (token) {
         jwt.verify(token, JWT_SECRET, (err, decoded) => {
-            if(err){
-                return res.status(401).json({"message": "Unauthorize User."});
-            }else{
+            if (err) {
+                return res.status(401).json({ "message": "error with your key." });
+            } else {
                 req.user = decoded;
                 next();
             }
         })
-    }else{
-        return res.status(401).json({"message": "Unauthorized User."});
+    } else {
+        return res.status(401).json({ "message": "Unauthorized User." });
     }
 }
 
-
+// built-in middleware is used.
 app.use(express.json());
 
+
+// signup route and route-handler:
 app.post("/signup", (req, res) => {
-    const {username, email, password} = req.body;
+    const { username, email, password } = req.body;
 
-    if(!username || !email || !password){
-        return res.status(400).json({"message": "Name, Email and Password is required."});
+    if (!username || !email || !password) {
+        return res.status(400).json({ "message": "Name, Email and Password is required." });
     }
 
-    if(userDataBase.find(user => user.email === email)){
-        return res.status(409).json({"message": "This email is already used here."});
+    if (userDataBase.find(user => user.email === email)) {
+        return res.status(409).json({ "message": "This email is already used here." });
     }
 
-    userDataBase.push({username, email, password});
+    userDataBase.push({ username, email, password });
     console.log(`New User: \nName:\t${username}\nEmail:\t${email}\nPassword:\t${password}`);
-    res.status(200).json({"message": "User Register Successful."})
+    res.status(200).json({ "message": "User Register Successful." })
 });
 
-app.post("/signin", (req,res) => {
-    const {email, password} = req.body;
-    
-    if(!email || !password){
-        return res.status(400).json({"message": "Enter Email and Password."});
+// signin route and route-handler:
+app.post("/signin", (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ "message": "Enter Email and Password." });
     }
 
     const isUserExist = userDataBase.find(user => user.email === email && user.password === password);
 
-    if(isUserExist){
-        const token = jwt.sign({email}, JWT_SECRET);
-        res.status(200).json({token});
-        console.log(`[LOGIN]---User:\t${email}`);
-    }else{
-        return res.status(401).json({"message": "Email and Password is Wrong."});
+    if (isUserExist) {
+        const token = jwt.sign({ email }, JWT_SECRET);
+        res.status(200).json({ token });
+        console.log(`\nUser-Status: \n[LOGIN]---User:\t${email}\nTOL: [${new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"})}]`);
+    } else {
+        return res.status(401).json({ "message": "Email and Password is Wrong." });
     }
 });
 
-app.post("/user-profile", (req, res) => {
-    const decodedToken = req.user; 
+// uer-profile route and route-handler:
+app.get("/user-profile", auth, (req, res) => {
+    const decodedToken = req.user;
 
     const checkUserInfo = userDataBase.find(user => user.email === decodedToken.email)
-    if(checkUserInfo){
+    if (checkUserInfo) {
         res.status(200).json({
             "Name": checkUserInfo.username,
             "Email": checkUserInfo.email
         });
-    }else{
-        return res.status(403).json({"message": "Access Denied."});
+    } else {
+        return res.status(403).json({ "message": "Access Denied." });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is ONLINE --> "http://localhost:${PORT}"\n`);
+    console.log(`Server is ONLINE --> "http://localhost:${PORT}"`);
 })
