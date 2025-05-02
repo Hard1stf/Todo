@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 const userDataBase = [];
 
 
+// auth middleware for authorization.
 const auth = async (req, res, next) => {
     const token = req.headers.authorization;
 
@@ -37,10 +38,21 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../Front-End/public/index.html"));
 });
 
-
-app.get("/signup", (req,res) => {
+// "/signup" route and route-handler renders the signup.html.
+app.get("/signup", (req, res) => {
     res.sendFile(path.join(__dirname, "../Front-End/public/static/signup.html"));
 })
+
+// "/signin" route and route-handler renders the signin.html.
+app.get("/signin", (req, res) => {
+    res.sendFile(path.join(__dirname, "../Front-End/public/static/signin.html"))
+})
+
+// "/user-profile-page" route and route-handler renders the user-profile.html.
+app.get("/user-profile-page", (req, res) => {
+    res.sendFile(path.join(__dirname, "../Front-End/public/static/user-profile.html"))
+})
+
 
 // signup route and route-handler:
 app.post("/signup", (req, res) => {
@@ -72,7 +84,7 @@ app.post("/signin", (req, res) => {
     if (isUserExist) {
         const token = jwt.sign({ email }, JWT_SECRET);
         res.status(200).json({ token });
-        console.log(`\nUser-Status: \n[LOGIN]---User:\t${email}\nTOL: [${new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"})}]`);
+        console.log(`\nUser-Status: \n[LOGIN]---User:\t${email}\nTOL: [${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}]`);
     } else {
         return res.status(401).json({ "message": "Email and Password is Wrong." });
     }
